@@ -104,7 +104,7 @@
     <h1>ОХОТА НА РИСКИ</h1>
   </header>
   <div id="game-info">
-    <span id="timer">Время: <strong><span id="time">60</span> сек</strong></span>
+    <span id="timer">Время: <strong><span id="time">0</span> сек</strong></span>
     <span id="score">Найдено: <strong><span id="score-value">0</span></strong></span>
   </div>
   <div id="game-container">
@@ -129,7 +129,7 @@
   <div id="intro-modal" class="modal" style="display:flex;">
     <div class="modal-content">
       <h2>Как играть</h2>
-      <p>В течение 60&nbsp;секунд найдите и кликните по всем опасным зонам на изображении. Каждый правильно найденный риск подсвечивается зелёным и увеличивает счёт.</p>
+      <p> Найди и кликни по всем опасностям и рискам на изображении. Каждый правильно найденный риск подсвечивается зелёным и увеличивает счёт.</p>
       <button onclick="startIntro()">Старт</button>
     </div>
   </div>
@@ -223,7 +223,9 @@
     const foundGroups = new Set();
 
     let score = 0;
-    let timeLeft = 60;
+    let timeElapsed = 0;      // секунд с начала раунда
+    const totalTime = 60;     // лимит времени
+    let timerId;              // идентификатор setInterval
 
     function createHotspots() {
       const img = document.getElementById('risk-image');
@@ -273,9 +275,8 @@
       // Проверяем, все ли риски найдены
       if (foundGroups.size === new Set(hazards.map(h => h.group)).size) {
         clearInterval(timerId);
-        playRandomSound('good'); // Воспроизводим 'Profi.mp3'
-        const timeSpent = 60 - timeLeft;
-        alert(`Ты нашел ${score} рисков и опасностей за ${timeSpent} секунд!`);
+        playRandomSound('good');
+        alert(`Ты нашёл все риски за ${timeElapsed} секунд!`);
         endGame();
       }
     }
@@ -291,19 +292,19 @@
     // Запуск игры после прочтения инструкций
     function startGame() {
       document.getElementById('intro-modal').style.display = 'none';
-      timeLeft = 60;
+      timeElapsed = 0;
       score = 0;
-      document.getElementById('time').textContent = timeLeft;
+      document.getElementById('time').textContent = timeElapsed;
       document.getElementById('score-value').textContent = score;
       startTimer();
     }
 
     function startTimer() {
       const timerEl = document.getElementById('time');
-      const timerId = setInterval(() => {
-        timeLeft--;
-        timerEl.textContent = timeLeft;
-        if (timeLeft <= 0) {
+      timerId = setInterval(() => {
+        timeElapsed++;
+        timerEl.textContent = timeElapsed;
+        if (timeElapsed >= totalTime) {
           clearInterval(timerId);
           endGame();
         }
