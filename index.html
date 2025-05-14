@@ -144,7 +144,7 @@
   <div id="name-modal" class="modal">
     <div class="modal-content">
       <h2>Игра окончена!</h2>
-      <p>Вы нашли <span id="final-score"></span> рисков.</p>
+      <p>Вы нашли <span id="final-score"></span> рисков за <span id="final-time"></span> секунд.</p>
       <input id="player-name" type="text" maxlength="20" placeholder="Ваше имя" style="width:90%;padding:8px;margin:10px 0;">
       <button onclick="saveScore()">Сохранить результат</button>
     </div>
@@ -313,15 +313,18 @@
 
     function endGame() {
       document.getElementById('final-score').textContent = score;
+      document.getElementById('final-time').textContent = timeElapsed;
       document.getElementById('name-modal').style.display = 'flex';
     }
 
     function saveScore() {
       const name = document.getElementById('player-name').value.trim() || 'Без имени';
-      const record = { name, score, date: new Date().toLocaleString() };
+      const record = { name, score, time: timeElapsed, date: new Date().toLocaleString() };
       let records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
       records.push(record);
-      records = records.sort((a,b) => b.score - a.score).slice(0,10);
+      records = records
+        .sort((a,b) => (b.score !== a.score) ? b.score - a.score : a.time - b.time)
+        .slice(0,10);
       localStorage.setItem('leaderboard', JSON.stringify(records));
       document.getElementById('name-modal').style.display = 'none';
       showLeaderboard();
@@ -333,7 +336,7 @@
       const records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
       records.forEach(r => {
         const li = document.createElement('li');
-        li.textContent = `${r.name} — ${r.score} (${r.date})`;
+        li.textContent = `${r.name} — ${r.score} рисков за ${r.time} c. (${r.date})`;
         list.append(li);
       });
       document.getElementById('leaderboard-modal').style.display = 'flex';

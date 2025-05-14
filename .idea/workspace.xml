@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="Sounds">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="End of the game" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -73,7 +70,7 @@
       <updated>1747210502641</updated>
       <workItem from="1747210503648" duration="5559000" />
       <workItem from="1747217111331" duration="4892000" />
-      <workItem from="1747227799001" duration="3184000" />
+      <workItem from="1747227799001" duration="4042000" />
     </task>
     <task id="LOCAL-00001" summary="RA Game">
       <option name="closed" value="true" />
@@ -107,7 +104,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747228238385</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="End of the game">
+      <option name="closed" value="true" />
+      <created>1747231234869</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1747231234869</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -117,6 +122,7 @@
     <MESSAGE value="RA Game" />
     <MESSAGE value="Boarders" />
     <MESSAGE value="Sounds" />
-    <option name="LAST_COMMIT_MESSAGE" value="Sounds" />
+    <MESSAGE value="End of the game" />
+    <option name="LAST_COMMIT_MESSAGE" value="End of the game" />
   </component>
 </project>
