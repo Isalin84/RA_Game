@@ -135,10 +135,21 @@
   </div>
 
   <div id="leaderboard-modal" class="modal">
-    <div class="modal-content">
-      <h2>Таблица лидеров</h2>
-      <ol id="leaderboard-list"></ol>
-      <button onclick="closeLeaderboard()">Закрыть</button>
+    <div class="modal-content" style="background: url('Leaderboard.jpg') no-repeat center center; background-size: cover; padding: 20px; border-radius: 8px; color: white; text-shadow: 1px 1px 2px black; min-height: 520px; height: 55vh; max-height: 80vh; display: flex; flex-direction: column; justify-content: flex-start;">
+      <h2 style="text-align:center; width:100%;">Таблица лидеров</h2>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: rgba(0,0,0,0.25);">
+        <thead>
+          <tr>
+            <th style="border: 1px solid white; padding: 8px;">Место</th>
+            <th style="border: 1px solid white; padding: 8px;">Имя</th>
+            <th style="border: 1px solid white; padding: 8px;">Рисков за время</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-list">
+          <!-- Заполняется скриптом -->
+        </tbody>
+      </table>
+      <button onclick="closeLeaderboard()" style="margin-top: 15px; padding: 10px 20px; border: none; background: #3498db; color: white; border-radius: 4px; cursor: pointer;">Закрыть</button>
     </div>
   </div>
   <div id="name-modal" class="modal">
@@ -334,10 +345,14 @@
       const list = document.getElementById('leaderboard-list');
       list.innerHTML = '';
       const records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
-      records.forEach(r => {
-        const li = document.createElement('li');
-        li.textContent = `${r.name} — ${r.score} рисков за ${r.time} c. (${r.date})`;
-        list.append(li);
+      records.slice(0, 5).forEach((r, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td style="border: 1px solid white; padding: 8px;">${index + 1}</td>
+          <td style="border: 1px solid white; padding: 8px;">${r.name}</td>
+          <td style="border: 1px solid white; padding: 8px;">${r.score} рисков за ${r.time} c.</td>
+        `;
+        list.append(row);
       });
       document.getElementById('leaderboard-modal').style.display = 'flex';
     }
