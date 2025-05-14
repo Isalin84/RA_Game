@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Игра: Найди риски</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+      text-align: center;
+    }
+    header {
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 20px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    #game-info {
+      margin: 20px 0;
+    }
+    #timer, #score {
+      display: inline-block;
+      margin: 0 15px;
+      font-size: 1.2em;
+    }
+    #game-container {
+      position: relative;
+      display: inline-block;
+      border: 4px solid #34495e;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      max-width: 100vw;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      box-sizing: border-box;
+    }
+    #risk-image {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      max-width: 100vw;
+      max-height: 70vh;
+    }
+    .hotspot {
+      position: absolute;
+      border: 2px solid rgba(231, 76, 60, 0.7);
+      cursor: pointer;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      z-index: 10;
+      box-shadow: 0 0 0 0 rgba(46,204,113,0.7);
+    }
+    .hotspot.found {
+      border-color: rgba(46, 204, 113, 0.7);
+      animation: foundAnim 0.5s;
+      box-shadow: 0 0 16px 6px rgba(46,204,113,0.4);
+    }
+    @keyframes foundAnim {
+      0% { box-shadow: 0 0 0 0 rgba(46,204,113,0.7); }
+      100% { box-shadow: 0 0 16px 6px rgba(46,204,113,0.4); }
+    }
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: left;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .modal-content button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #3498db;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .modal-content button:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Игра: Найди производственные риски</h1>
+  </header>
+  <div id="game-info">
+    <span id="timer">Время: <strong><span id="time">60</span> сек</strong></span>
+    <span id="score">Найдено: <strong><span id="score-value">0</span></strong></span>
+  </div>
+  <div id="game-container">
+    <!-- Замените "image.jpg" на ваше изображение с рисками -->
+    <img id="risk-image" src="image.jpg" alt="Риски на фото">
+    <!-- Hotspots генерируются скриптом -->
+  </div>
+
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <p id="modal-description"></p>
+      <button onclick="closeModal()">Закрыть</button>
+    </div>
+  </div>
+  <!-- Вступительный модуль с инструкциями -->
+  <div id="intro-modal" class="modal" style="display:flex;">
+    <div class="modal-content">
+      <h2>Как играть</h2>
+      <p>В течение 60&nbsp;секунд найдите и кликните по всем опасным зонам на изображении. Каждый правильно найденный риск подсвечивается зелёным и увеличивает счёт.</p>
+      <button onclick="startGame()">Начать игру</button>
+    </div>
+  </div>
+
+  <div id="leaderboard-modal" class="modal">
+    <div class="modal-content">
+      <h2>Таблица лидеров</h2>
+      <ol id="leaderboard-list"></ol>
+      <button onclick="closeLeaderboard()">Закрыть</button>
+    </div>
+  </div>
+  <div id="name-modal" class="modal">
+    <div class="modal-content">
+      <h2>Игра окончена!</h2>
+      <p>Вы нашли <span id="final-score"></span> рисков.</p>
+      <input id="player-name" type="text" maxlength="20" placeholder="Ваше имя" style="width:90%;padding:8px;margin:10px 0;">
+      <button onclick="saveScore()">Сохранить результат</button>
+    </div>
+  </div>
+
+  <script>
+    // Настройте список рисков: координаты в процентах от ширины/высоты изображения
+    const hazards = [
+      // --- Головы (два работника)
+      {
+        group: 'head',
+        name: 'Отсутствие касок',
+        x: 0.20, y: 0.026, w: 0.11, h: 0.11,
+        description: 'Отлично!Оба сотрудника без средств защиты головы.'
+      },
+      {
+        group: 'head',
+        name: 'Отсутствие касок',
+        x: 0.72, y: 0.04, w: 0.11, h: 0.13,
+        description: 'Отлично!Оба сотрудника без средств защиты головы.'
+      },
+      // --- Глаза (два работника)
+      {
+        group: 'eyes',
+        name: 'Отсутствие защитных очков',
+        x: 0.25, y: 0.16, w: 0.055, h: 0.04,
+        description: 'Молождец! Работники не применяют защитные очки.'
+      },
+      {
+        group: 'eyes',
+        name: 'Отсутствие защитных очков',
+        x: 0.72, y: 0.19, w: 0.06, h: 0.04,
+        description: 'Нет защитных очков у работника справа.'
+      },
+      // --- Уши (два работника)
+      {
+        group: 'ears',
+        name: 'Отсутствие защиты слуха',
+        x: 0.19, y: 0.15, w: 0.05, h: 0.065,
+        description: 'Нет защиты слуха у работника слева.'
+      },
+      {
+        group: 'ears',
+        name: 'Отсутствие защиты слуха',
+        x: 0.79, y: 0.18, w: 0.05, h: 0.065,
+        description: 'Нет защиты слуха у работника справа.'
+      },
+      // --- Руки (два работника)
+      {
+        group: 'arms',
+        name: 'Открытые руки',
+        x: 0.11, y: 0.48, w: 0.24, h: 0.32,
+        description: 'Открытые руки у работника слева.'
+      },
+      {
+        group: 'arms',
+        name: 'Открытые руки',
+        x: 0.64, y: 0.38, w: 0.24, h: 0.24,
+        description: 'Открытые руки у работника справа.'
+      },
+      // --- Шланг
+      {
+        group: 'hose',
+        name: 'Шланг на полу',
+        x: 0.52, y: 0.59, w: 0.16, h: 0.38,
+        description: 'Шланг размотан и лежит на пути.'
+      },
+      // --- Лужа
+      {
+        group: 'puddle',
+        name: 'Лужа на полу',
+        x: 0.39, y: 0.64, w: 0.12, h: 0.34,
+        description: 'Пролившаяся жидкость на полу.'
+      }
+    ];
+    const foundGroups = new Set();
+
+    let score = 0;
+    let timeLeft = 60;
+
+    function createHotspots() {
+      const img = document.getElementById('risk-image');
+      const container = document.getElementById('game-container');
+      // Удаляем старые зоны
+      document.querySelectorAll('.hotspot').forEach(e => e.remove());
+      // Ждём загрузки изображения
+      function placeHotspots() {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        const dispW = img.width;
+        const dispH = img.height;
+        hazards.forEach((hz, i) => {
+          const div = document.createElement('div');
+          div.classList.add('hotspot');
+          div.style.left = (hz.x * dispW) + 'px';
+          div.style.top = (hz.y * dispH) + 'px';
+          div.style.width = (hz.w * dispW) + 'px';
+          div.style.height = (hz.h * dispH) + 'px';
+          div.dataset.index = i;
+          div.dataset.group = hz.group;
+          div.onclick = onHotspotClick;
+          container.append(div);
+        });
+      }
+      if (img.complete) placeHotspots();
+      else img.onload = placeHotspots;
+      // Перестраиваем зоны при изменении размера окна
+      window.onresize = () => {
+        document.querySelectorAll('.hotspot').forEach(e => e.remove());
+        placeHotspots();
+      };
+    }
+
+    function onHotspotClick(e) {
+      const idx = e.currentTarget.dataset.index;
+      const grp = hazards[idx].group;
+
+      // если такую группу уже нашли — выходим
+      if (foundGroups.has(grp)) return;
+
+      foundGroups.add(grp);
+
+      // подсветить все hotspot-ы данного риска
+      document.querySelectorAll('.hotspot').forEach(hs => {
+        if (hs.dataset.group === grp) hs.classList.add('found');
+      });
+
+      score++;
+      document.getElementById('score-value').textContent = score;
+      showModal(hazards[idx].description);
+    }
+
+    function showModal(text) {
+      document.getElementById('modal-description').textContent = text;
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+    // Запуск игры после прочтения инструкций
+    function startGame() {
+      document.getElementById('intro-modal').style.display = 'none';
+      timeLeft = 60;
+      score = 0;
+      document.getElementById('time').textContent = timeLeft;
+      document.getElementById('score-value').textContent = score;
+      startTimer();
+    }
+
+    function startTimer() {
+      const timerEl = document.getElementById('time');
+      const timerId = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timerId);
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame() {
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('name-modal').style.display = 'flex';
+    }
+
+    function saveScore() {
+      const name = document.getElementById('player-name').value.trim() || 'Без имени';
+      const record = { name, score, date: new Date().toLocaleString() };
+      let records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      records.push(record);
+      records = records.sort((a,b) => b.score - a.score).slice(0,10);
+      localStorage.setItem('leaderboard', JSON.stringify(records));
+      document.getElementById('name-modal').style.display = 'none';
+      showLeaderboard();
+    }
+
+    function showLeaderboard() {
+      const list = document.getElementById('leaderboard-list');
+      list.innerHTML = '';
+      const records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+      records.forEach(r => {
+        const li = document.createElement('li');
+        li.textContent = `${r.name} — ${r.score} (${r.date})`;
+        list.append(li);
+      });
+      document.getElementById('leaderboard-modal').style.display = 'flex';
+    }
+
+    function closeLeaderboard() {
+      document.getElementById('leaderboard-modal').style.display = 'none';
+      location.reload();
+    }
+
+    window.onload = () => {
+      createHotspots();
+    };
+  </script>
+</body>
+</html>
