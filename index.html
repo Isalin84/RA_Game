@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Игра: Найди риски</title>
+  <title>Игра: Охота на риски</title>
   <style>
     body {
       margin: 0;
@@ -22,7 +22,7 @@
     #game-info {
       margin: 20px 0;
     }
-    #timer, #score {
+    #timer, #score, #level {
       display: inline-block;
       margin: 0 15px;
       font-size: 1.2em;
@@ -86,13 +86,17 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .modal-content button {
-      margin-top: 15px;
+      margin: 15px auto 0 auto;
       padding: 10px 20px;
       border: none;
       background: #3498db;
       color: #fff;
       border-radius: 4px;
       cursor: pointer;
+      display: block;
+    }
+    .modal-content h2 {
+      text-align: center;
     }
     .modal-content button:hover {
       background: #2980b9;
@@ -100,15 +104,16 @@
   </style>
 </head>
 <body>
+  <audio id="bottle-audio" src="assets/bottle-line.mp3" loop></audio>
   <header>
     <h1>ОХОТА НА РИСКИ</h1>
   </header>
   <div id="game-info">
+    <span id="level">Уровень: <strong><span id="level-value">1</span></strong></span>
     <span id="timer">Время: <strong><span id="time">0</span> сек</strong></span>
-    <span id="score">Найдено: <strong><span id="score-value">0</span></strong></span>
+    <span id="score">Найдено: <strong><span id="score-value">0</span>/<span id="total-risks">0</span></strong></span>
   </div>
   <div id="game-container">
-    <!-- Замените "image.jpg" на ваше изображение с рисками -->
     <img id="risk-image" src="image.jpg" alt="Риски на фото">
     <!-- Hotspots генерируются скриптом -->
     <div id="video-container" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:20; background:rgba(0,0,0,0.85);">
@@ -155,88 +160,201 @@
   <div id="name-modal" class="modal">
     <div class="modal-content">
       <h2>Игра окончена!</h2>
+      <p>Вы прошли все уровни!</p>
       <p>Вы нашли <span id="final-score"></span> рисков за <span id="final-time"></span> секунд.</p>
       <input id="player-name" type="text" maxlength="20" placeholder="Ваше имя" style="width:90%;padding:8px;margin:10px 0;">
       <button onclick="saveScore()">Сохранить результат</button>
     </div>
   </div>
 
-  <script>
-    // Настройте список рисков: координаты в процентах от ширины/высоты изображения
-    const hazards = [
-      // --- Головы (два работника)
-      {
-        group: 'head',
-        name: 'Отсутствие касок',
-        x: 0.20, y: 0.026, w: 0.11, h: 0.11,
-        description: 'Отлично!Оба сотрудника без средств защиты головы.'
-      },
-      {
-        group: 'head',
-        name: 'Отсутствие касок',
-        x: 0.72, y: 0.04, w: 0.11, h: 0.13,
-        description: 'Отлично!Оба сотрудника без средств защиты головы.'
-      },
-      // --- Глаза (два работника)
-      {
-        group: 'eyes',
-        name: 'Отсутствие защитных очков',
-        x: 0.25, y: 0.16, w: 0.055, h: 0.04,
-        description: 'Молодец! Работники не применяют защитные очки.'
-      },
-      {
-        group: 'eyes',
-        name: 'Отсутствие защитных очков',
-        x: 0.72, y: 0.19, w: 0.06, h: 0.04,
-        description: 'Молодец! Работники не применяют защитные очки.'
-      },
-      // --- Уши (два работника)
-      {
-        group: 'ears',
-        name: 'Отсутствие защиты слуха',
-        x: 0.19, y: 0.15, w: 0.05, h: 0.065,
-        description: 'Нет защиты слуха у работников.'
-      },
-      {
-        group: 'ears',
-        name: 'Отсутствие защиты слуха',
-        x: 0.79, y: 0.18, w: 0.05, h: 0.065,
-        description: 'Нет защиты слуха у работников.'
-      },
-      // --- Руки (два работника)
-      {
-        group: 'arms',
-        name: 'Открытые руки',
-        x: 0.11, y: 0.48, w: 0.24, h: 0.32,
-        description: 'Открытые руки у работников, не применяются антипорезные перчатки.'
-      },
-      {
-        group: 'arms',
-        name: 'Открытые руки',
-        x: 0.64, y: 0.38, w: 0.24, h: 0.24,
-        description: 'Открытые руки у работников, не применяются антипорезные перчатки'
-      },
-      // --- Шланг
-      {
-        group: 'hose',
-        name: 'Шланг на полу',
-        x: 0.52, y: 0.59, w: 0.16, h: 0.38,
-        description: 'Шланг размотан и лежит на пути.Опасность спотыкания'
-      },
-      // --- Лужа
-      {
-        group: 'puddle',
-        name: 'Лужа на полу',
-        x: 0.39, y: 0.64, w: 0.12, h: 0.34,
-        description: 'Пролившаяся жидкость на полу. Опасность поскальзывания'
-      }
-    ];
-    const foundGroups = new Set();
+  <div id="level-complete-modal" class="modal">
+    <div class="modal-content">
+      <h2>Уровень пройден!</h2>
+      <p>Вы нашли все риски на этом уровне!</p>
+      <p>Найдено: <span id="level-score"></span> рисков за <span id="level-time"></span> секунд.</p>
+      <button onclick="nextLevel()">Следующий уровень</button>
+    </div>
+  </div>
 
-    let score = 0;
-    let timeElapsed = 0;      // секунд с начала раунда
-    const totalTime = 60;     // лимит времени
+  <script>
+    // Определение уровней игры с разными изображениями и рисками
+    const gameLevels = [
+      {
+        image: "image.jpg",
+        hazards: [
+          // --- Головы (два работника)
+          {
+            group: 'head',
+            name: 'Отсутствие касок',
+            x: 0.20, y: 0.026, w: 0.11, h: 0.11,
+            description: 'Отлично! Оба сотрудника без средств защиты головы.'
+          },
+          {
+            group: 'head',
+            name: 'Отсутствие касок',
+            x: 0.72, y: 0.04, w: 0.11, h: 0.13,
+            description: 'Отлично! Оба сотрудника без средств защиты головы.'
+          },
+          // --- Глаза (два работника)
+          {
+            group: 'eyes',
+            name: 'Отсутствие защитных очков',
+            x: 0.25, y: 0.16, w: 0.055, h: 0.04,
+            description: 'Молодец! Работники не применяют защитные очки.'
+          },
+          {
+            group: 'eyes',
+            name: 'Отсутствие защитных очков',
+            x: 0.72, y: 0.19, w: 0.06, h: 0.04,
+            description: 'Молодец! Работники не применяют защитные очки.'
+          },
+          // --- Уши (два работника)
+          {
+            group: 'ears',
+            name: 'Отсутствие защиты слуха',
+            x: 0.19, y: 0.15, w: 0.05, h: 0.065,
+            description: 'Нет защиты слуха у работников.'
+          },
+          {
+            group: 'ears',
+            name: 'Отсутствие защиты слуха',
+            x: 0.79, y: 0.18, w: 0.05, h: 0.065,
+            description: 'Нет защиты слуха у работников.'
+          },
+          // --- Руки (два работника)
+          {
+            group: 'arms',
+            name: 'Открытые руки',
+            x: 0.11, y: 0.48, w: 0.24, h: 0.32,
+            description: 'Открытые руки у работников, не применяются антипорезные перчатки.'
+          },
+          {
+            group: 'arms',
+            name: 'Открытые руки',
+            x: 0.64, y: 0.38, w: 0.24, h: 0.24,
+            description: 'Открытые руки у работников, не применяются антипорезные перчатки'
+          },
+          // --- Шланг
+          {
+            group: 'hose',
+            name: 'Шланг на полу',
+            x: 0.52, y: 0.59, w: 0.16, h: 0.38,
+            description: 'Шланг размотан и лежит на пути. Опасность спотыкания'
+          },
+          // --- Лужа
+          {
+            group: 'puddle',
+            name: 'Лужа на полу',
+            x: 0.39, y: 0.64, w: 0.12, h: 0.34,
+            description: 'Пролившаяся жидкость на полу. Опасность поскальзывания'
+          },
+          // --- Защитные экраны на конвейере отсутствуют (две зоны)
+          {
+            group: 'guard',
+            name: 'Отсутствие защитных экранов',
+            x: 0.02, y: 0.30, w: 0.1, h: 0.15,
+            description: 'На бутылочном конвейере отсутствуют защитные экраны.'
+          },
+          {
+            group: 'guard',
+            name: 'Отсутствие защитных экранов',
+            x: 0.32, y: 0.26, w: 0.35, h: 0.09,
+            description: 'На бутылочном конвейере отсутствуют защитные экраны.'
+          }
+        ]
+      },
+      {
+        image: "image2.jpg",
+        hazards: [
+          // Риски для второго изображения
+          {
+            group: 'head2',
+            name: 'Отсутствие защиты головы',
+            x: 0.58, y: 0.15, w: 0.12, h: 0.12,
+            description: 'Отлично! Вы обнаружили отсутствие защиты головы.'
+          },
+          {
+            group: 'eyes2',
+            name: 'Отсутствие защитных очков',
+            x: 0.62, y: 0.29, w: 0.08, h: 0.05,
+            description: 'Правильно! Работник не использует защитные очки.'
+          },
+          {
+            group: 'ppe2',
+            name: 'Неправильные СИЗ',
+            x: 0.55, y: 0.40, w: 0.20, h: 0.30,
+            description: 'Верно! Работник использует неподходящие средства индивидуальной защиты.'
+          },
+          {
+            group: '5s2',
+            name: 'Нарушение 5S',
+            x: 0.12, y: 0.78, w: 0.25, h: 0.25,
+            description: 'Отлично! Вы обнаружили нарушение принципов 5S - беспорядок на рабочем месте.'
+          },
+          // --- Отсутствие защитных экранов (левая верхняя часть конвейера)
+          {
+            group: 'guard2',
+            name: 'Отсутствие защитных экранов',
+            x: 0.02, y: 0.22, w: 0.48, h: 0.12,
+            description: 'На конвейере отсутствуют защитные экраны от возможного разлета осколков.'
+          },
+          // --- Отсутствие защиты слуха
+          {
+            group: 'ears2',
+            name: 'Отсутствие защиты слуха',
+            x: 0.58, y: 0.28, w: 0.04, h: 0.04,
+            description: 'Нет защиты слуха у работника.'
+          }
+        ]
+      }
+      // Здесь можно добавить еще уровни в будущем
+    ];
+    // Режим разработчика — старт сразу со второго уровня
+    const devMode = false;
+    // Переменные для отслеживания прогресса игры
+    let currentLevel = 0;
+    let foundGroups = new Set();
+    let totalScore = 0;
+    let levelScore = 0;
+    let totalTimeElapsed = 0;
+    let timeElapsed = 0;      // секунд с начала текущего уровня
+    const totalTime = 60;     // лимит времени на уровень
     let timerId;              // идентификатор setInterval
+
+    function loadLevel(levelIndex) {
+      // Показать сообщение о минимуме рисков для первого и второго уровней
+      if (levelIndex === 0) {
+        alert('Найди минимум 7 рисков и опасностей!');
+      }
+      if (levelIndex === 1) {
+        alert('Найди минимум 6 рисков и опасностей!');
+      }
+      // Включаем/выключаем шум бутылочной линии на первых двух уровнях
+      const bottleAudio = document.getElementById('bottle-audio');
+      if (levelIndex < 2) {
+        bottleAudio.play().catch(() => {});
+      } else {
+        bottleAudio.pause();
+      }
+      // Сбрасываем состояние текущего уровня
+      foundGroups = new Set();
+      levelScore = 0;
+      timeElapsed = 0;
+
+      // Обновляем UI
+      document.getElementById('level-value').textContent = levelIndex + 1;
+      document.getElementById('time').textContent = timeElapsed;
+      document.getElementById('score-value').textContent = levelScore;
+      document.getElementById('total-risks').textContent =
+        new Set(gameLevels[levelIndex].hazards.map(h => h.group)).size;
+
+      // Загружаем изображение для текущего уровня
+      const img = document.getElementById('risk-image');
+      img.src = gameLevels[levelIndex].image;
+
+      // Создаем новые хотспоты после загрузки изображения
+      createHotspots();
+    }
 
     function createHotspots() {
       const img = document.getElementById('risk-image');
@@ -249,7 +367,10 @@
         const h = img.naturalHeight;
         const dispW = img.width;
         const dispH = img.height;
-        hazards.forEach((hz, i) => {
+
+        const currentHazards = gameLevels[currentLevel].hazards;
+
+        currentHazards.forEach((hz, i) => {
           const div = document.createElement('div');
           div.classList.add('hotspot');
           div.style.left = (hz.x * dispW) + 'px';
@@ -273,22 +394,39 @@
 
     function onHotspotClick(e) {
       const idx = e.currentTarget.dataset.index;
-      const grp = hazards[idx].group;
+      const currentHazards = gameLevels[currentLevel].hazards;
+      const grp = currentHazards[idx].group;
+
       if (foundGroups.has(grp)) return;
+
       foundGroups.add(grp);
       document.querySelectorAll('.hotspot').forEach(hs => {
         if (hs.dataset.group === grp) hs.classList.add('found');
       });
-      score++;
-      document.getElementById('score-value').textContent = score;
-      showModal(hazards[idx].description);
+
+      levelScore++;
+      totalScore++;
+      document.getElementById('score-value').textContent = levelScore;
+      showModal(currentHazards[idx].description);
       playRandomSound('good');
-      // Проверяем, все ли риски найдены
-      if (foundGroups.size === new Set(hazards.map(h => h.group)).size) {
+
+      // Проверяем, все ли риски найдены на текущем уровне
+      const uniqueGroups = new Set(currentHazards.map(h => h.group)).size;
+      if (foundGroups.size === uniqueGroups) {
         clearInterval(timerId);
         playRandomSound('good');
-        alert(`Ты нашёл все риски за ${timeElapsed} секунд!`);
-        endGame();
+
+        // Если это последний уровень, завершаем игру
+        if (currentLevel === gameLevels.length - 1) {
+          totalTimeElapsed += timeElapsed;
+          endGame();
+        } else {
+          // Иначе показываем модальное окно завершения уровня
+          totalTimeElapsed += timeElapsed;
+          document.getElementById('level-score').textContent = levelScore;
+          document.getElementById('level-time').textContent = timeElapsed;
+          document.getElementById('level-complete-modal').style.display = 'flex';
+        }
       }
     }
 
@@ -301,12 +439,23 @@
       document.getElementById('modal').style.display = 'none';
     }
     // Запуск игры после прочтения инструкций
+    function nextLevel() {
+      document.getElementById('level-complete-modal').style.display = 'none';
+      currentLevel++;
+      loadLevel(currentLevel);
+      startTimer();
+    }
+
     function startGame() {
       document.getElementById('intro-modal').style.display = 'none';
-      timeElapsed = 0;
-      score = 0;
-      document.getElementById('time').textContent = timeElapsed;
-      document.getElementById('score-value').textContent = score;
+
+      // Сбрасываем общие счетчики
+      currentLevel = devMode ? 1 : 0;
+      totalScore = 0;
+      totalTimeElapsed = 0;
+
+      // Загружаем первый уровень
+      loadLevel(currentLevel);
       startTimer();
     }
 
@@ -323,19 +472,26 @@
     }
 
     function endGame() {
-      document.getElementById('final-score').textContent = score;
-      document.getElementById('final-time').textContent = timeElapsed;
+      document.getElementById('final-score').textContent = totalScore;
+      document.getElementById('final-time').textContent = totalTimeElapsed;
       document.getElementById('name-modal').style.display = 'flex';
     }
 
     function saveScore() {
       const name = document.getElementById('player-name').value.trim() || 'Без имени';
-      const record = { name, score, time: timeElapsed, date: new Date().toLocaleString() };
+      const record = { 
+        name, 
+        score: totalScore, 
+        time: totalTimeElapsed, 
+        date: new Date().toLocaleString() 
+      };
+      
       let records = JSON.parse(localStorage.getItem('leaderboard') || '[]');
       records.push(record);
       records = records
         .sort((a,b) => (b.score !== a.score) ? b.score - a.score : a.time - b.time)
         .slice(0,10);
+      
       localStorage.setItem('leaderboard', JSON.stringify(records));
       document.getElementById('name-modal').style.display = 'none';
       showLeaderboard();
@@ -359,7 +515,8 @@
 
     function closeLeaderboard() {
       document.getElementById('leaderboard-modal').style.display = 'none';
-      location.reload();
+      // Instead of reloading the page, show the intro modal to start a new game
+      document.getElementById('intro-modal').style.display = 'flex';
     }
 
     function startIntro() {
@@ -368,11 +525,43 @@
       const video = document.getElementById('intro-video');
       videoContainer.style.display = 'block';
       video.currentTime = 0;
-      video.play();
-      video.onended = function() {
+      
+      // Add error handling for video playback
+      video.onerror = function() {
+        console.error('Error playing video');
         videoContainer.style.display = 'none';
         startGame();
       };
+      
+      // Ensure the video ends properly
+      video.onended = function() {
+        console.log('Video ended, starting game');
+        videoContainer.style.display = 'none';
+        startGame();
+      };
+      
+      // Try to play the video
+      try {
+        const playPromise = video.play();
+        
+        // Handle the play promise
+        if (playPromise !== undefined) {
+          playPromise.then(_ => {
+            // Playback started successfully
+            console.log('Video playback started');
+          })
+          .catch(error => {
+            // Auto-play was prevented or other error
+            console.error('Video playback failed:', error);
+            videoContainer.style.display = 'none';
+            startGame();
+          });
+        }
+      } catch (e) {
+        console.error('Error starting video:', e);
+        videoContainer.style.display = 'none';
+        startGame();
+      }
     }
 
     function playRandomSound(folder) {
@@ -388,7 +577,8 @@
     });
 
     window.onload = () => {
-      createHotspots();
+      // Инициализация игры происходит после нажатия кнопки "Старт"
+      // в модальном окне с инструкциями
     };
   </script>
 </body>

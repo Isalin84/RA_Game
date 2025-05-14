@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="End of the game&#10;&lt;div id=&quot;name-modal&quot; class=&quot;modal&quot;&gt;&#10;  &lt;div class=&quot;modal-content&quot;&gt;&#10;    &lt;h2&gt;Игра окончена!&lt;/h2&gt;&#10;    &lt;p&gt;Вы нашли &lt;span id=&quot;final-score&quot;&gt;&lt;/span&gt; рисков за &lt;span id=&quot;final-time&quot;&gt;&lt;/span&gt; секунд.&lt;/p&gt;&#10;    &lt;input type=&quot;text&quot; id=&quot;player-name&quot; placeholder=&quot;Введите ваше имя&quot; /&gt;&#10;    &lt;button onclick=&quot;saveScore()&quot;&gt;Сохранить результат&lt;/button&gt;&#10;  &lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&lt;script&gt;&#10;function endGame() {&#10;  document.getElementById('final-score').textContent = score;&#10;  document.getElementById('final-time').textContent = timeElapsed;&#10;  // ... rest of endGame function ...&#10;}&#10;&#10;function saveScore() {&#10;  const name = document.getElementById('player-name').value.trim();&#10;  if (!name) return alert('Пожалуйста, введите имя');&#10;&#10;  const record = { name, score, time: timeElapsed, date: new Date().toLocaleString() };&#10;  let records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  records.push(record);&#10;  records = records&#10;    .sort((a,b) =&gt; (b.score !== a.score) ? b.score - a.score : a.time - b.time)&#10;    .slice(0,10);&#10;  localStorage.setItem('ra-game-records', JSON.stringify(records));&#10;  showLeaderboard();&#10;  // ... rest of saveScore function ...&#10;}&#10;&#10;function showLeaderboard() {&#10;  const records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  const leaderboard = document.getElementById('leaderboard');&#10;  leaderboard.innerHTML = '';&#10;  records.forEach(r =&gt; {&#10;    const li = document.createElement('li');&#10;    li.textContent = `${r.name} — ${r.score} рисков за ${r.time} c. (${r.date})`;&#10;    leaderboard.appendChild(li);&#10;  });&#10;  // ... rest of showLeaderboard function ...&#10;}&#10;&lt;/script&gt;">
+    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="Correction у работников">
+      <change afterPath="$PROJECT_DIR$/assets/bottle-line.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/image2.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,8 +61,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-PY-251.23774.444" />
-        <option value="bundled-python-sdk-890ed5b35930-d9c5bdb153f4-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.23774.444" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-PY-251.25410.122" />
+        <option value="bundled-python-sdk-880ecab49056-36ea0e71a18c-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-251.25410.122" />
       </set>
     </attachedChunks>
   </component>
@@ -73,6 +76,9 @@
       <workItem from="1747210503648" duration="5559000" />
       <workItem from="1747217111331" duration="4892000" />
       <workItem from="1747227799001" duration="4820000" />
+      <workItem from="1747235784648" duration="3188000" />
+      <workItem from="1747245802339" duration="2698000" />
+      <workItem from="1747248529705" duration="4219000" />
     </task>
     <task id="LOCAL-00001" summary="RA Game">
       <option name="closed" value="true" />
@@ -122,7 +128,23 @@
       <option name="project" value="LOCAL" />
       <updated>1747232731238</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Leaderbaord">
+      <option name="closed" value="true" />
+      <created>1747235847346</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1747235847346</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Correction у работников">
+      <option name="closed" value="true" />
+      <created>1747236348460</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1747236348460</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -134,6 +156,8 @@
     <MESSAGE value="Sounds" />
     <MESSAGE value="End of the game" />
     <MESSAGE value="End of the game&#10;&lt;div id=&quot;name-modal&quot; class=&quot;modal&quot;&gt;&#10;  &lt;div class=&quot;modal-content&quot;&gt;&#10;    &lt;h2&gt;Игра окончена!&lt;/h2&gt;&#10;    &lt;p&gt;Вы нашли &lt;span id=&quot;final-score&quot;&gt;&lt;/span&gt; рисков за &lt;span id=&quot;final-time&quot;&gt;&lt;/span&gt; секунд.&lt;/p&gt;&#10;    &lt;input type=&quot;text&quot; id=&quot;player-name&quot; placeholder=&quot;Введите ваше имя&quot; /&gt;&#10;    &lt;button onclick=&quot;saveScore()&quot;&gt;Сохранить результат&lt;/button&gt;&#10;  &lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&lt;script&gt;&#10;function endGame() {&#10;  document.getElementById('final-score').textContent = score;&#10;  document.getElementById('final-time').textContent = timeElapsed;&#10;  // ... rest of endGame function ...&#10;}&#10;&#10;function saveScore() {&#10;  const name = document.getElementById('player-name').value.trim();&#10;  if (!name) return alert('Пожалуйста, введите имя');&#10;&#10;  const record = { name, score, time: timeElapsed, date: new Date().toLocaleString() };&#10;  let records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  records.push(record);&#10;  records = records&#10;    .sort((a,b) =&gt; (b.score !== a.score) ? b.score - a.score : a.time - b.time)&#10;    .slice(0,10);&#10;  localStorage.setItem('ra-game-records', JSON.stringify(records));&#10;  showLeaderboard();&#10;  // ... rest of saveScore function ...&#10;}&#10;&#10;function showLeaderboard() {&#10;  const records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  const leaderboard = document.getElementById('leaderboard');&#10;  leaderboard.innerHTML = '';&#10;  records.forEach(r =&gt; {&#10;    const li = document.createElement('li');&#10;    li.textContent = `${r.name} — ${r.score} рисков за ${r.time} c. (${r.date})`;&#10;    leaderboard.appendChild(li);&#10;  });&#10;  // ... rest of showLeaderboard function ...&#10;}&#10;&lt;/script&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="End of the game&#10;&lt;div id=&quot;name-modal&quot; class=&quot;modal&quot;&gt;&#10;  &lt;div class=&quot;modal-content&quot;&gt;&#10;    &lt;h2&gt;Игра окончена!&lt;/h2&gt;&#10;    &lt;p&gt;Вы нашли &lt;span id=&quot;final-score&quot;&gt;&lt;/span&gt; рисков за &lt;span id=&quot;final-time&quot;&gt;&lt;/span&gt; секунд.&lt;/p&gt;&#10;    &lt;input type=&quot;text&quot; id=&quot;player-name&quot; placeholder=&quot;Введите ваше имя&quot; /&gt;&#10;    &lt;button onclick=&quot;saveScore()&quot;&gt;Сохранить результат&lt;/button&gt;&#10;  &lt;/div&gt;&#10;&lt;/div&gt;&#10;&#10;&lt;script&gt;&#10;function endGame() {&#10;  document.getElementById('final-score').textContent = score;&#10;  document.getElementById('final-time').textContent = timeElapsed;&#10;  // ... rest of endGame function ...&#10;}&#10;&#10;function saveScore() {&#10;  const name = document.getElementById('player-name').value.trim();&#10;  if (!name) return alert('Пожалуйста, введите имя');&#10;&#10;  const record = { name, score, time: timeElapsed, date: new Date().toLocaleString() };&#10;  let records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  records.push(record);&#10;  records = records&#10;    .sort((a,b) =&gt; (b.score !== a.score) ? b.score - a.score : a.time - b.time)&#10;    .slice(0,10);&#10;  localStorage.setItem('ra-game-records', JSON.stringify(records));&#10;  showLeaderboard();&#10;  // ... rest of saveScore function ...&#10;}&#10;&#10;function showLeaderboard() {&#10;  const records = JSON.parse(localStorage.getItem('ra-game-records')) || [];&#10;  const leaderboard = document.getElementById('leaderboard');&#10;  leaderboard.innerHTML = '';&#10;  records.forEach(r =&gt; {&#10;    const li = document.createElement('li');&#10;    li.textContent = `${r.name} — ${r.score} рисков за ${r.time} c. (${r.date})`;&#10;    leaderboard.appendChild(li);&#10;  });&#10;  // ... rest of showLeaderboard function ...&#10;}&#10;&lt;/script&gt;" />
+    <MESSAGE value="Leaderbaord" />
+    <MESSAGE value="Correction у работников" />
+    <option name="LAST_COMMIT_MESSAGE" value="Correction у работников" />
   </component>
 </project>
