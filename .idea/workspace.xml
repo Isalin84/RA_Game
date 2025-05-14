@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="Boarders">
-      <change afterPath="$PROJECT_DIR$/assets/Intro.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Mimo.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Molodets.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Otlichno.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/Profi.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/ne_popal.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-    </list>
+    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="Sounds" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,18 +13,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Isalin84"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Isalin84&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Isalin84/RA_Game.git",
-    "accountId": "e4963bfc-bb60-4a3e-865a-0d97e91b1b9d"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Isalin84/RA_Game.git&quot;,
+    &quot;accountId&quot;: &quot;e4963bfc-bb60-4a3e-865a-0d97e91b1b9d&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -79,6 +70,7 @@
       <updated>1747210502641</updated>
       <workItem from="1747210503648" duration="5559000" />
       <workItem from="1747217111331" duration="4892000" />
+      <workItem from="1747227799001" duration="319000" />
     </task>
     <task id="LOCAL-00001" summary="RA Game">
       <option name="closed" value="true" />
@@ -96,7 +88,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747223089469</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Sounds">
+      <option name="closed" value="true" />
+      <created>1747227849382</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1747227849382</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -105,6 +105,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="RA Game" />
     <MESSAGE value="Boarders" />
-    <option name="LAST_COMMIT_MESSAGE" value="Boarders" />
+    <MESSAGE value="Sounds" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sounds" />
   </component>
 </project>
