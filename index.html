@@ -101,7 +101,7 @@
 </head>
 <body>
   <header>
-    <h1>Игра: Найди производственные риски</h1>
+    <h1>ОХОТА НА РИСКИ</h1>
   </header>
   <div id="game-info">
     <span id="timer">Время: <strong><span id="time">60</span> сек</strong></span>
@@ -111,6 +111,12 @@
     <!-- Замените "image.jpg" на ваше изображение с рисками -->
     <img id="risk-image" src="image.jpg" alt="Риски на фото">
     <!-- Hotspots генерируются скриптом -->
+    <div id="video-container" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; z-index:20; background:rgba(0,0,0,0.85);">
+      <video id="intro-video" style="width:100%; height:100%; object-fit:contain; border-radius:8px;" controls>
+        <source src="assets/Intro.mp4" type="video/mp4">
+        Ваш браузер не поддерживает видео.
+      </video>
+    </div>
   </div>
 
   <div id="modal" class="modal">
@@ -124,7 +130,7 @@
     <div class="modal-content">
       <h2>Как играть</h2>
       <p>В течение 60&nbsp;секунд найдите и кликните по всем опасным зонам на изображении. Каждый правильно найденный риск подсвечивается зелёным и увеличивает счёт.</p>
-      <button onclick="startGame()">Начать игру</button>
+      <button onclick="startIntro()">Старт</button>
     </div>
   </div>
 
@@ -165,13 +171,13 @@
         group: 'eyes',
         name: 'Отсутствие защитных очков',
         x: 0.25, y: 0.16, w: 0.055, h: 0.04,
-        description: 'Молождец! Работники не применяют защитные очки.'
+        description: 'Молодец! Работники не применяют защитные очки.'
       },
       {
         group: 'eyes',
         name: 'Отсутствие защитных очков',
         x: 0.72, y: 0.19, w: 0.06, h: 0.04,
-        description: 'Нет защитных очков у работника справа.'
+        description: 'Молодец! Работники не применяют защитные очки.'
       },
       // --- Уши (два работника)
       {
@@ -191,27 +197,27 @@
         group: 'arms',
         name: 'Открытые руки',
         x: 0.11, y: 0.48, w: 0.24, h: 0.32,
-        description: 'Открытые руки у работника слева.'
+        description: 'Открытые руки у работников, не применяются антипорезные перчатки.'
       },
       {
         group: 'arms',
         name: 'Открытые руки',
         x: 0.64, y: 0.38, w: 0.24, h: 0.24,
-        description: 'Открытые руки у работника справа.'
+        description: 'Открытые руки у работника слева, не применяются антипорезные перчатки'
       },
       // --- Шланг
       {
         group: 'hose',
         name: 'Шланг на полу',
         x: 0.52, y: 0.59, w: 0.16, h: 0.38,
-        description: 'Шланг размотан и лежит на пути.'
+        description: 'Шланг размотан и лежит на пути.Опасность спотыкания'
       },
       // --- Лужа
       {
         group: 'puddle',
         name: 'Лужа на полу',
         x: 0.39, y: 0.64, w: 0.12, h: 0.34,
-        description: 'Пролившаяся жидкость на полу.'
+        description: 'Пролившаяся жидкость на полу. Опасность поскальзывания'
       }
     ];
     const foundGroups = new Set();
@@ -255,20 +261,23 @@
     function onHotspotClick(e) {
       const idx = e.currentTarget.dataset.index;
       const grp = hazards[idx].group;
-
-      // если такую группу уже нашли — выходим
       if (foundGroups.has(grp)) return;
-
       foundGroups.add(grp);
-
-      // подсветить все hotspot-ы данного риска
       document.querySelectorAll('.hotspot').forEach(hs => {
         if (hs.dataset.group === grp) hs.classList.add('found');
       });
-
       score++;
       document.getElementById('score-value').textContent = score;
       showModal(hazards[idx].description);
+      playRandomSound('good');
+      // Проверяем, все ли риски найдены
+      if (foundGroups.size === new Set(hazards.map(h => h.group)).size) {
+        clearInterval(timerId);
+        playRandomSound('good'); // Воспроизводим 'Profi.mp3'
+        const timeSpent = 60 - timeLeft;
+        alert(`Ты нашел ${score} рисков и опасностей за ${timeSpent} секунд!`);
+        endGame();
+      }
     }
 
     function showModal(text) {
@@ -333,6 +342,31 @@
       document.getElementById('leaderboard-modal').style.display = 'none';
       location.reload();
     }
+
+    function startIntro() {
+      document.getElementById('intro-modal').style.display = 'none';
+      const videoContainer = document.getElementById('video-container');
+      const video = document.getElementById('intro-video');
+      videoContainer.style.display = 'block';
+      video.currentTime = 0;
+      video.play();
+      video.onended = function() {
+        videoContainer.style.display = 'none';
+        startGame();
+      };
+    }
+
+    function playRandomSound(folder) {
+      const sounds = folder === 'good' ? ['Molodets.mp3', 'Otlichno.mp3', 'Profi.mp3'] : ['Mimo.mp3', 'ne_popal.mp3'];
+      const sound = new Audio('assets/' + folder + '/' + sounds[Math.floor(Math.random() * sounds.length)]);
+      sound.play();
+    }
+
+    document.getElementById('game-container').addEventListener('click', function(e) {
+      if (!e.target.classList.contains('hotspot')) {
+        playRandomSound('bad');
+      }
+    });
 
     window.onload = () => {
       createHotspots();

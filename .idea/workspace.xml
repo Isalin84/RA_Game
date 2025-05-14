@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="RA Game">
+    <list default="true" id="96c8579b-afec-4797-bb15-e7caa4325e64" name="Changes" comment="Boarders">
+      <change afterPath="$PROJECT_DIR$/assets/Intro.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Mimo.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Molodets.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Otlichno.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/Profi.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/ne_popal.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,6 +58,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -70,7 +78,7 @@
       <option name="presentableId" value="Default" />
       <updated>1747210502641</updated>
       <workItem from="1747210503648" duration="5559000" />
-      <workItem from="1747217111331" duration="3287000" />
+      <workItem from="1747217111331" duration="4892000" />
     </task>
     <task id="LOCAL-00001" summary="RA Game">
       <option name="closed" value="true" />
@@ -80,7 +88,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747222276495</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Boarders">
+      <option name="closed" value="true" />
+      <created>1747223089469</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1747223089469</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -88,6 +104,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="RA Game" />
-    <option name="LAST_COMMIT_MESSAGE" value="RA Game" />
+    <MESSAGE value="Boarders" />
+    <option name="LAST_COMMIT_MESSAGE" value="Boarders" />
   </component>
 </project>
